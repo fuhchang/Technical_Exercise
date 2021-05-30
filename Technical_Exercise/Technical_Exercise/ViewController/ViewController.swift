@@ -41,6 +41,15 @@ extension ViewController: BitbucketInfoVMProcotol {
             self.bitbucketView.tableView.reloadData()
         }
     }
+    
+    func naviToUserDetailScreen(val: values) {
+        DispatchQueue.main.async {
+            self.removeSpinner()
+            let userDetailVC = UserDetailViewController()
+            userDetailVC.userDetail = val
+            self.navigationController?.pushViewController(userDetailVC, animated: true)
+        }
+    }
 }
 
 
@@ -61,16 +70,7 @@ extension ViewController: BitbucketInfoViewProtocols {
     }
     
     func loadRepoDetailView(val: values) {
-        var detailInfo = val
         self.showSpinner(onView: self.view)
-        self.bitBucketVM.loadAvatarImage(stringUrl: val.project?.links?.avatar?.href ?? "", completion: { (imageData, error) in
-            self.removeSpinner()
-            DispatchQueue.main.async {
-                let userDetailVC = UserDetailViewController()
-                detailInfo.project?.imageData = imageData
-                userDetailVC.userDetail = detailInfo
-                self.navigationController?.pushViewController(userDetailVC, animated: true)
-            }
-        })
+        self.bitBucketVM.loadImage(val: val)
     }
 }
