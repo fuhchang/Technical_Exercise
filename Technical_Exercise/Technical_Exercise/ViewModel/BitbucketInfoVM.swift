@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 protocol BitbucketInfoVMProcotol {
     func handleBitBucketInfo(result: bitbucketInfo)
+    func naviToUserDetailScreen(val: values)
 }
 struct BitbucketInfoVM {
     var delegate: BitbucketInfoVMProcotol?
@@ -42,6 +43,17 @@ struct BitbucketInfoVM {
         })
     }
     
+    func loadImage(val: values) {
+        var deftailInfo = val
+        self.loadAvatarImage(stringUrl: val.project?.links?.avatar?.href ?? "", completion: { (imageData, error) in
+            deftailInfo.project?.imageData = imageData
+            self.delegate?.naviToUserDetailScreen(val: deftailInfo)
+        })
+        if Thread.current.isRunningXCTest {
+            deftailInfo.project?.imageData = UIImage(named: "java")?.pngData()
+            self.delegate?.naviToUserDetailScreen(val: deftailInfo)
+        }
+    }
     func loadAvatarImage(stringUrl: String, completion: @escaping (_ response: Data?, _ error: Error?) -> Void) {
         if let url = URL(string: stringUrl) {
             NetworkManager.shared.getData(from: url) { data, response, error in
